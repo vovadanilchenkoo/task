@@ -10,11 +10,11 @@ const RegForm = () => {
   const [positions, setPositions] = useState([])
   const dispatch = useDispatch()
 
-  const { handleSubmit, register, errors } = useForm();
+  const { handleSubmit, register, errors, setError } = useForm();
   const onSubmit = (values, e) => {
     e.preventDefault()
-    console.log(e)
-    console.log(values)
+    // console.log(e)
+    // console.log(values)
   };
 
   const handleFileInput = (e) => {
@@ -90,61 +90,66 @@ const RegForm = () => {
             Name
             <input
               ref={register({
-                required: true,
-                minLength: 2,
-                maxLength: 60
+                required: 'Name field is required',
+                minLength: {
+                  value: 2,
+                  message: 'Min length is 2 symbols'
+                },
+                maxLength: {
+                  value: 60,
+                  message: 'Max length is 60 symbols'
+                }
               })}
               type='text'
               placeholder='Your name'
               name='name'
               id='name'
-              className='form__input'
+              className={errors.name ? 'form__input form__input_error' : 'form__input'}
             />
 
-            {errors.name?.type === "required" && 
-              <span className='form__notification'>Your input is required</span>}
-            {errors.name?.type === "minLength" &&
-              <span className='form__notification'>Min length is 2 symbols</span>}
-            {errors.name?.type === "maxLength" &&
-              <span className='form__notification'>Max length is 60 symbols</span>}
+            {errors.name && 
+              <span className='form__notification'>{errors.name.message}</span>}
+            
           </label>
 
           <label htmlFor='email' className='form__label'>
             Email
             <input
               ref={register({
-                required: true,
+                required: 'Email field is required',
                 pattern: {
-                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                  message: 'Invalid email address'
                 }
               })}
               type='email'
               placeholder='Your email'
               name='email'
               id='email'
-              className='form__input'
+              className={errors.email ? 'form__input form__input_error' : 'form__input'}
             />
             
-            {errors.name?.type === "required" && 
-              <span className='form__notification'>Your input is required</span>}
-            {errors.name?.type === "pattern" && 
-              <span className='form__notification'>Invalid email address</span>}
+            {errors.email && 
+              <span className='form__notification'>{errors.email.message}</span>}
+
           </label>
           
           <label htmlFor='phone' className='form__label'>
             Phone number
             <input
               ref={register({
-                required: true
+                required: 'Phone field is required'
               })}
               type='text'
               placeholder='+380 XX X XX XX XX' 
               name='phone' 
               id='phone' 
-            className='form__input' />
-            <span className='form__notification'>
-              Enter phone number in open format
-            </span>
+              className={errors.phone ? 'form__input form__input_error' : 'form__input'}
+            />
+
+            {errors.phone && 
+              <span className='form__notification'>{errors.phone.message}</span>}
+          
           </label>
           <div className='form-radio-list'>
             <span className='form-radio-list__title'>
@@ -159,6 +164,9 @@ const RegForm = () => {
                       className='form-radio-list__label'
                     >
                       <input
+                        ref={register({
+                          required: 'Position field is required'
+                        })}
                         type='radio'
                         name='position'
                         id={position.name}
@@ -172,10 +180,60 @@ const RegForm = () => {
                   ))
                 : ''
             }
+            {errors.position && 
+              <span className='form__notification'>{errors.position.message}</span>}
+            
             <div className='load-photo'>
               <label htmlFor='photo' className='load-photo__label'>
                 Photo
-                <input type='file' onChange={handleFileInput} name='photo' placeholder='Upload your photo' id='photo' className='load-photo__file-input form__input' />
+                <input
+                  ref={register({
+                    required: 'Photo field is required',
+                    validate: {
+                      resolution: value => {
+                        const _URL = window.URL || window.webkitURL
+                        const image = new Image(value[0])
+                        const imageURL = _URL.createObjectURL(value[0])
+                        
+                        image.src = imageURL
+                        image.onload = function(e) {
+                          const width = e.target.naturalWidth
+                          const height = e.target.height
+                          if(width <= 70 && height <= 70) {
+                            setError('photo', 'resolution', 'Photo resolution must be greater than 70x70 px')
+                          }
+                          
+                          _URL.revokeObjectURL(imageURL);
+                        }
+                      },
+                      size: value => {
+                        const size = Math.round(value[0].size / 1024) // get image size in kylobytes
+
+                        if(size >= 5000) {
+                          setError('photo', 'size', 'Photo size must be less than 5mb')
+                        }
+                      },
+                      // type: value => {
+                      //   const format = value[0].type
+
+                      //   console.log(format)
+                      //   if(format.includes('/jpeg') || format.includes('/jpg')) {
+                      //     console.log('hello')
+                      //     setError('photo', 'type', 'Photo format must be jpeg/jpg')
+                      //   } else {
+                      //     console.log('error')
+                      //     setError('photo', 'type', 'Photo format must be jpeg/jpg')
+                      //   }
+                      // }
+                    }
+                  })} 
+                  type='file'
+                  name='photo'
+                  id='photo'
+                  onChange={handleFileInput}
+                  placeholder='Upload your photo'
+                  className='load-photo__file-input form__input'
+                />
                 <div className='custom-load-photo'>
                   <div className='custom-load-photo__input'>
                     {
@@ -188,6 +246,10 @@ const RegForm = () => {
                     Browse
                   </button>
                 </div>
+
+                {errors.photo &&
+                  <span className=''>{errors.photo.message}</span>}
+
               </label>
             </div>
           </div>
