@@ -1,6 +1,7 @@
 import React from 'react'
-import './AboutCandidate.sass'
+import AnchorLink from 'react-anchor-link-smooth-scroll'
 import { ReactComponent as ManLaptop } from '../../assets/img/man-laptop-v1.svg'
+import './AboutCandidate.sass'
 
 const AboutCandidate = () => {
   return (
@@ -21,9 +22,9 @@ const AboutCandidate = () => {
             <p className='candidate-txt__description'>
               If 3rd party css/javascript libraries are added to the project via bower/npm/yarn you will get bonus points. If you use any task runner (gulp/webpack) you will get bonus points as well. Slice service directory page P​SD mockup​ into HTML5/CSS3. 
             </p>
-            <a className='candidate-txt__link' href='##'>
+            <AnchorLink href='#reg-form' className='candidate-txt__link'>
               Sign up now
-            </a>
+            </AnchorLink>
           </div>
         </div>
       </div>

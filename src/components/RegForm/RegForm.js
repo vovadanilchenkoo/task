@@ -1,23 +1,32 @@
 import React, { useState, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useForm } from 'react-hook-form'
+import CSSTransition from 'react-transition-group/CSSTransition'
 
 import './RegForm.sass'
+import { ReactComponent as CloseIcon } from '../../assets/img/close-icon.svg'
 import config from '../../config'
 
 const RegForm = () => {
   const [fileName, setFileName] = useState('')
   const [positions, setPositions] = useState([])
+  const [congrats, setCongrats] = useState(false)
+  const usersCount = useSelector(state => state.usersCount)
   const dispatch = useDispatch()
 
-  const { handleSubmit, register, errors, setError } = useForm();
+  const { handleSubmit, register, errors, setError, clearErrors } = useForm();
   const onSubmit = (values, e) => {
     e.preventDefault()
-    // console.log(e)
-    // console.log(values)
+    
+    // setCongrats(true)
+
+    // setTimeout(() => {
+    //   setCongrats(false)
+    // }, 3000)
   };
 
   const handleFileInput = (e) => {
+    // set file name for showing in file input
     if(e.target.files.length) {
       setFileName(e.target.files[0].name)
     }
@@ -32,7 +41,7 @@ const RegForm = () => {
     }
 
     fetchData()
-  }, [])
+  }, []) // TODO: am i right to do that set array literal in useEffect as second param.
 
   const handleForm = (e) => {
     e.preventDefault()
@@ -55,13 +64,14 @@ const RegForm = () => {
       const response = await data.json()
 
       if(response.success) {
-        const getUsers = await fetch(`${config.apiUrl}/users?page=1&count=6`)
+        const getUsers = await fetch(`${config.apiUrl}/users?page=1&count=${usersCount}`)
         const users = await getUsers.json()
   
         dispatch({type: 'SET_PAGE', payload: users.page})
         dispatch({type: 'SET_USERS', payload: users.users})
         dispatch({type: 'SET_TOTAL_PAGES', payload: users.total_pages})
       } else {
+        // TODO: am i need handle request errors
         console.log('error')
       }
 
@@ -70,8 +80,12 @@ const RegForm = () => {
     postData()
   }
 
+  const closeCongrats = () => {
+    setCongrats(false)
+  }
+
   return (
-    <section className='reg-form'>
+    <section id='reg-form' className='reg-form'>
       <div className='container'>
         <h1 className='reg-form__title'>
           Register to get a work
@@ -81,31 +95,32 @@ const RegForm = () => {
         </h3>
 
         <form
-          className='form' 
-          // onSubmit={handleForm}
+          className='form'
           onSubmit={handleSubmit(onSubmit)}
           encType='multipart/form-data'
         >
           <label htmlFor='name' className='form__label'>
             Name
-            <input
-              ref={register({
-                required: 'Name field is required',
-                minLength: {
-                  value: 2,
-                  message: 'Min length is 2 symbols'
-                },
-                maxLength: {
-                  value: 60,
-                  message: 'Max length is 60 symbols'
-                }
-              })}
-              type='text'
-              placeholder='Your name'
-              name='name'
-              id='name'
-              className={errors.name ? 'form__input form__input_error' : 'form__input'}
-            />
+            <div className='form-input-wrap'>
+              <input
+                ref={register({
+                  required: 'Name field is required',
+                  minLength: {
+                    value: 2,
+                    message: 'Min length is 2 symbols'
+                  },
+                  maxLength: {
+                    value: 60,
+                    message: 'Max length is 60 symbols'
+                  }
+                })}
+                type='text'
+                placeholder='Your name'
+                name='name'
+                id='name'
+                className={errors.name ? 'form__input form__input_error' : 'form__input'}
+              />
+            </div>
 
             {errors.name && 
               <span className='form__notification'>{errors.name.message}</span>}
@@ -138,7 +153,11 @@ const RegForm = () => {
             Phone number
             <input
               ref={register({
-                required: 'Phone field is required'
+                required: 'Phone field is required',
+                pattern: {
+                  value: /^[\+]{0,1}380([0-9]{9})$/,
+                  message: 'Number should start with code of Ukraine +380'
+                }
               })}
               type='text'
               placeholder='+380 XX X XX XX XX' 
@@ -190,47 +209,40 @@ const RegForm = () => {
                   ref={register({
                     required: 'Photo field is required',
                     validate: {
-                      resolution: value => {
+                      photo: value => {
+                        // check file format
+                        const format = value[0].type
+                        if(format.includes('/jpeg') || format.includes('/jpg')) {
+                          console.log('hello')
+                        } else {
+                          setError('photo', {type: 'format', message: 'The photo format must be jpeg/jpg type'})
+                        }
+
+                        // check photo resolution
                         const _URL = window.URL || window.webkitURL
+                        const size = Math.round(value[0].size / 1024) // get image size in kylobytes
                         const image = new Image(value[0])
                         const imageURL = _URL.createObjectURL(value[0])
-                        
+
                         image.src = imageURL
                         image.onload = function(e) {
-                          const width = e.target.naturalWidth
                           const height = e.target.height
-                          if(width <= 70 && height <= 70) {
-                            setError('photo', 'resolution', 'Photo resolution must be greater than 70x70 px')
+                          const width = e.target.naturalWidth
+                          console.log(size)
+                          if((width <= 7000 && height <= 7000) || size >= 5) {
+                            setError('photo', {type: 'resolution', message: 'Minimum size of photo 70x70px'})
                           }
                           
                           _URL.revokeObjectURL(imageURL);
                         }
-                      },
-                      size: value => {
-                        const size = Math.round(value[0].size / 1024) // get image size in kylobytes
-
-                        if(size >= 5000) {
-                          setError('photo', 'size', 'Photo size must be less than 5mb')
-                        }
-                      },
-                      // type: value => {
-                      //   const format = value[0].type
-
-                      //   console.log(format)
-                      //   if(format.includes('/jpeg') || format.includes('/jpg')) {
-                      //     console.log('hello')
-                      //     setError('photo', 'type', 'Photo format must be jpeg/jpg')
-                      //   } else {
-                      //     console.log('error')
-                      //     setError('photo', 'type', 'Photo format must be jpeg/jpg')
-                      //   }
-                      // }
+                      }
                     }
                   })} 
                   type='file'
                   name='photo'
                   id='photo'
                   onChange={handleFileInput}
+                  accept='image/jpg, image/jpeg'
                   placeholder='Upload your photo'
                   className='load-photo__file-input form__input'
                 />
@@ -248,7 +260,7 @@ const RegForm = () => {
                 </div>
 
                 {errors.photo &&
-                  <span className=''>{errors.photo.message}</span>}
+                  <span className='form__notification'>{errors.photo.message}</span>}
 
               </label>
             </div>
@@ -257,6 +269,42 @@ const RegForm = () => {
             Sign up now
           </button>
         </form>
+
+        {/* Modal after success registration */}
+        {
+          congrats 
+            ? <CSSTransition
+                in={congrats}
+                timeout={5000}
+                mountOnEnter
+                unmountOnExit
+              >
+                <div className='congrats'>
+                  <div className='congrats-backdrop'></div>
+                  <div className='congrats-content'>
+                    <h5 className='congrats-content__title'>Congratulations</h5>
+                    <button 
+                      type='button'
+                      onClick={closeCongrats}
+                      className='congrats-content__close'
+                    >
+                      <CloseIcon />
+                    </button>
+                    <p className='congrats-content__text'>
+                      You have successfully passed the registration
+                    </p>
+                    <button 
+                      type='button'
+                      onClick={closeCongrats}
+                      className='btn congrats-content__great-btn'
+                    >
+                      Great
+                    </button>
+                  </div>
+                </div>
+              </CSSTransition>
+            : ''
+        }
       </div>
     </section>
   )

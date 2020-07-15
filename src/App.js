@@ -1,6 +1,7 @@
 import React from 'react'
 import './App.sass'
 
+import MobileNav from './components/MobileNav/MobileNav'
 import Header from './components/Header/Header'
 import PrimarySection from './components/PrimarySection/PrimarySection'
 import AboutCandidate from './components/AboutCandidate/AboutCandidate'
@@ -11,6 +12,7 @@ function App() {
   return (
     <>
       <main>
+        <MobileNav />
         <Header />
         <PrimarySection />
         <AboutCandidate />

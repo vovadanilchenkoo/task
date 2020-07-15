@@ -1,11 +1,35 @@
+@import '../../mixins'
+
+.header
+  position: fixed
+  top: 0
+  left: 0
+  right: 0
+  background: #ffffff
+  z-index: 1
+
 .header-nav
   display: flex
   align-items: center
   justify-content: space-between
 
+  &__menu-btn
+    display: none
+    padding: 26px 0 26px 30px
+    outline: none
+
+    +media(md)
+      display: block
+
+    +media(sm)
+      padding: 13px 0 13px 30px
+
 .nav-list
   display: flex
   align-items: center
+
+  +media(md)
+    display: none
 
   &__link
     display: block
