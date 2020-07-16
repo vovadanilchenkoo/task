@@ -1,27 +1,27 @@
 {
   "files": {
-    "main.css": "/static/css/main.fe1195e7.chunk.css",
-    "main.js": "/static/js/main.4925df9b.chunk.js",
-    "main.js.map": "/static/js/main.4925df9b.chunk.js.map",
-    "runtime-main.js": "/static/js/runtime-main.b634b528.js",
-    "runtime-main.js.map": "/static/js/runtime-main.b634b528.js.map",
-    "static/js/2.4c2297dd.chunk.js": "/static/js/2.4c2297dd.chunk.js",
-    "static/js/2.4c2297dd.chunk.js.map": "/static/js/2.4c2297dd.chunk.js.map",
-    "index.html": "/index.html",
-    "precache-manifest.9c1f73cb63ac491dcc3e7730ad0a8768.js": "/precache-manifest.9c1f73cb63ac491dcc3e7730ad0a8768.js",
-    "service-worker.js": "/service-worker.js",
-    "static/css/main.fe1195e7.chunk.css.map": "/static/css/main.fe1195e7.chunk.css.map",
-    "static/js/2.4c2297dd.chunk.js.LICENSE.txt": "/static/js/2.4c2297dd.chunk.js.LICENSE.txt",
-    "static/media/PrimarySection.sass": "/static/media/banner-photo.71b6ce8c.jpg",
-    "static/media/close-icon.7f73230e.svg": "/static/media/close-icon.7f73230e.svg",
-    "static/media/logo.bce28fb7.svg": "/static/media/logo.bce28fb7.svg",
-    "static/media/man-laptop-v1.f28cb247.svg": "/static/media/man-laptop-v1.f28cb247.svg",
-    "static/media/menu-icon.55d02ee4.svg": "/static/media/menu-icon.55d02ee4.svg"
+    "main.css": "/task/static/css/main.4b5e365c.chunk.css",
+    "main.js": "/task/static/js/main.4925df9b.chunk.js",
+    "main.js.map": "/task/static/js/main.4925df9b.chunk.js.map",
+    "runtime-main.js": "/task/static/js/runtime-main.bcf7b128.js",
+    "runtime-main.js.map": "/task/static/js/runtime-main.bcf7b128.js.map",
+    "static/js/2.4c2297dd.chunk.js": "/task/static/js/2.4c2297dd.chunk.js",
+    "static/js/2.4c2297dd.chunk.js.map": "/task/static/js/2.4c2297dd.chunk.js.map",
+    "index.html": "/task/index.html",
+    "precache-manifest.2bc84d53e5714589c724d7133905be5b.js": "/task/precache-manifest.2bc84d53e5714589c724d7133905be5b.js",
+    "service-worker.js": "/task/service-worker.js",
+    "static/css/main.4b5e365c.chunk.css.map": "/task/static/css/main.4b5e365c.chunk.css.map",
+    "static/js/2.4c2297dd.chunk.js.LICENSE.txt": "/task/static/js/2.4c2297dd.chunk.js.LICENSE.txt",
+    "static/media/PrimarySection.sass": "/task/static/media/banner-photo.71b6ce8c.jpg",
+    "static/media/close-icon.7f73230e.svg": "/task/static/media/close-icon.7f73230e.svg",
+    "static/media/logo.bce28fb7.svg": "/task/static/media/logo.bce28fb7.svg",
+    "static/media/man-laptop-v1.f28cb247.svg": "/task/static/media/man-laptop-v1.f28cb247.svg",
+    "static/media/menu-icon.55d02ee4.svg": "/task/static/media/menu-icon.55d02ee4.svg"
   },
   "entrypoints": [
-    "static/js/runtime-main.b634b528.js",
+    "static/js/runtime-main.bcf7b128.js",
     "static/js/2.4c2297dd.chunk.js",
-    "static/css/main.fe1195e7.chunk.css",
+    "static/css/main.4b5e365c.chunk.css",
     "static/js/main.4925df9b.chunk.js"
   ]
 }
