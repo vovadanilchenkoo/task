@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Tooltip } from '@material-ui/core'
 import { useSelector, useDispatch, useStore } from 'react-redux'
 
@@ -6,8 +6,77 @@ import './CheerfulUsers.sass'
 import config from '../../config'
 import Placeholder from '../../assets/img/photo-cover.png'
 
+import Max from '../../assets/img/maximillian.png'
+import Adolph from '../../assets/img/adolph.png'
+import Elizabeth from '../../assets/img/elizabeth.png'
+import Alex from '../../assets/img/alexander.png'
+import Noah from '../../assets/img/noah.png'
+import Liam from '../../assets/img/liam.png'
+
 const CheerfulUsers = () => {
-  const users = useSelector(state => state.users)
+  // const users = useSelector(state => state.users)
+  const [users] = useState([
+    {
+      id: 1282,
+      name: 'Maximillian',
+      email: 'controldepartment@gmail',
+      phone: '+380 50 678 03 24',
+      position: 'Leading specialist of the Control Department',
+      position_id: 2, 
+      registration_timestamp: 1595249681,
+      photo: Max
+    },
+    {
+      id: 1283,
+      name: 'Adolph Blaine Charles David Earl Matthew Matthew',
+      email: 'adolph.blainecharles@.com',
+      phone: '+380 50 678 03 24',
+      position: 'Contextual advertising specialist',
+      position_id: 3,
+      registration_timestamp: 1595250302,
+      photo: Adolph
+    },
+    {
+      id: 1284,
+      name: 'Elizabeth',
+      email: 'elisabet.front@gmail.com',
+      phone: '+380 50 678 03 24',
+      position: 'Frontend developer',
+      position_id: 1,
+      registration_timestamp: 1595256952,
+      photo: Elizabeth
+    },
+    {
+      id: 1285,
+      name: 'Alexander Jayden',
+      email: 'alexander.back@gmail.com',
+      phone: '+380 50 678 03 24',
+      position: 'Backend developer',
+      position_id: 2,
+      registration_timestamp: 1595260855,
+      photo: Alex
+    },
+    {
+      id: 1286,
+      name: 'Noah',
+      email: 'noah1998@gmail.com',
+      phone: '+380 50 678 03 24',
+      position: 'QA',
+      position_id: 2,
+      registration_timestamp: 1595261022,
+      photo: Noah
+    },
+    {
+      id: 1287,
+      name: 'Liamgrievescasey Smith Wiam',
+      email: 'liamgrievescasey.smith@.ww',
+      phone: '+380 50 678 03 24',
+      position: 'Lead designer',
+      position_id: 2,
+      registration_timestamp: 1595266649,
+      photo: Liam
+    }
+  ])
   const page = useSelector(state => state.page)
   const totalPages = useSelector(state => state.totalPages)
   const store = useStore()
@@ -36,9 +105,13 @@ const CheerfulUsers = () => {
 
       const usersList = sortUsers(response.users)
 
-      dispatch({type: 'SET_PAGE', payload: response.page})
-      dispatch({type: 'SET_USERS', payload: response.users})
-      dispatch({type: 'SET_TOTAL_PAGES', payload: response.total_pages})
+      if(response.success) {
+        dispatch({type: 'SET_PAGE', payload: response.page})
+        dispatch({type: 'SET_USERS', payload: response.users})
+        dispatch({type: 'SET_TOTAL_PAGES', payload: response.total_pages})
+      } else {
+        console.log(response.message)
+      }
     }
 
     fetchData()
@@ -53,9 +126,13 @@ const CheerfulUsers = () => {
         const data = await fetch(`${config.apiUrl}/users?page=${page + 1}&count=${usersCount}`)
         const response = await data.json()
 
-        dispatch({type: 'SET_PAGE', payload: response.page})
-        dispatch({type: 'LOAD_MORE_USERS', payload: response.users})
-        dispatch({type: 'SET_TOTAL_PAGES', payload: response.total_pages})
+        if(response.success) {
+          dispatch({type: 'SET_PAGE', payload: response.page})
+          dispatch({type: 'LOAD_MORE_USERS', payload: response.users})
+          dispatch({type: 'SET_TOTAL_PAGES', payload: response.total_pages})
+        } else {
+          console.log(response.message)
+        }
       }
     }
 

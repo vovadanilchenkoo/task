@@ -2,21 +2,35 @@
   
 .primary-section
   color: #ffffff
-  margin-top: 70px
-  padding: 117px 0 114px
-  background: url(../../assets/img/banner-photo.jpg) no-repeat center
+  margin-top: 60px
+  padding: 108px 0 114px
+  background: url(../../assets/img/banner-photo.jpg) center/cover no-repeat
+
+  @media screen and (min-resolution: 192dpi), (-webkit-min-device-pixel-ratio: 2)
+    background: url(../../assets/img/banner-photo@2x.jpg) center/cover no-repeat
 
   +media(sm)
     margin-top: 44px
+    padding: 75px 0
 
   &__title
     width: 100%
     max-width: 540px
     color: #ffffff
-    margin: 0 0 42px
+    margin: 0 0 25px
     text-transform: uppercase
+
+    +media(sm)
+      text-align: center
 
   &__description
     width: 100%
     max-width: 530px
-    margin: 0 0 41px
+    margin: 0 0 33px
+
+    +media(sm)
+      text-align: center
+
+  &__sign-up
+    +media(sm)
+      margin: 0 auto

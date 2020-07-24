@@ -5,17 +5,24 @@ const SET_PAGE = 'SET_PAGE'
 const SET_TOTAL_PAGES = 'SET_TOTAL_PAGES'
 const SET_MOBILE_NAV = 'SET_MOBILE_NAV'
 const SET_USERS_COUNT = 'SET_USERS_COUNT'
+const SET_CONGRATS = 'SET_CONGRATS'
 
 const initialState = {
   page: 0,
   users: [],
   totalPages: 0,
   usersCount: 6,
-  mobileNav: false
+  mobileNav: false,
+  congrats: false
 }
 
 const rootReducer = (state = initialState, action) => {
   switch(action.type) {
+    case SET_CONGRATS: 
+      return {
+        ...state,
+        congrats: action.payload
+      }
     case SET_USERS_COUNT:
       return {
         ...state,

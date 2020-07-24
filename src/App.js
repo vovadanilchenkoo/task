@@ -8,6 +8,8 @@ import AboutCandidate from './components/AboutCandidate/AboutCandidate'
 import CheerfulUsers from './components/CheerfulUsers/CheerfulUsers'
 import RegForm from './components/RegForm/RegForm'
 
+// TODO: test on sisters computer "retina images"
+
 function App() {
   return (
     <>

@@ -1,29 +1,19 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useForm } from 'react-hook-form'
-import CSSTransition from 'react-transition-group/CSSTransition'
 
 import './RegForm.sass'
-import { ReactComponent as CloseIcon } from '../../assets/img/close-icon.svg'
 import config from '../../config'
+// import Modal from '../Modal/Modal'
 
 const RegForm = () => {
   const [fileName, setFileName] = useState('')
   const [positions, setPositions] = useState([])
-  const [congrats, setCongrats] = useState(false)
+  const congrats = useSelector(state => state.congrats)
   const usersCount = useSelector(state => state.usersCount)
   const dispatch = useDispatch()
 
-  const { handleSubmit, register, errors, setError, clearErrors } = useForm();
-  const onSubmit = (values, e) => {
-    e.preventDefault()
-    
-    // setCongrats(true)
-
-    // setTimeout(() => {
-    //   setCongrats(false)
-    // }, 3000)
-  };
+  const { handleSubmit, register, errors, setError } = useForm();
 
   const handleFileInput = (e) => {
     // set file name for showing in file input
@@ -37,14 +27,20 @@ const RegForm = () => {
       const data = await fetch(`${config.apiUrl}/positions`)
       const response = await data.json()
 
-      setPositions(response.positions)
+      if(response.success) {
+        setPositions(response.positions)
+      } else {
+        console.log(response.message)
+      }
     }
 
     fetchData()
-  }, []) // TODO: am i right to do that set array literal in useEffect as second param.
+  }, [])
 
-  const handleForm = (e) => {
+  const handleForm = (values, e) => {
     e.preventDefault()
+    
+    dispatch({type: 'SET_CONGRATS', payload: true})
 
     const formData = new FormData(e.target)
     const activePositionObj = positions.find(el => el.name === formData.get('position'))
@@ -66,22 +62,20 @@ const RegForm = () => {
       if(response.success) {
         const getUsers = await fetch(`${config.apiUrl}/users?page=1&count=${usersCount}`)
         const users = await getUsers.json()
-  
-        dispatch({type: 'SET_PAGE', payload: users.page})
-        dispatch({type: 'SET_USERS', payload: users.users})
-        dispatch({type: 'SET_TOTAL_PAGES', payload: users.total_pages})
-      } else {
-        // TODO: am i need handle request errors
-        console.log('error')
-      }
 
+        if(response.success) {
+          dispatch({type: 'SET_PAGE', payload: users.page})
+          dispatch({type: 'SET_USERS', payload: users.users})
+          dispatch({type: 'SET_TOTAL_PAGES', payload: users.total_pages})
+        } else {
+          console.log(response.message)
+        }
+      } else {
+        console.log(response.message)
+      }
     }
 
     postData()
-  }
-
-  const closeCongrats = () => {
-    setCongrats(false)
   }
 
   return (
@@ -96,7 +90,7 @@ const RegForm = () => {
 
         <form
           className='form'
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(handleForm)}
           encType='multipart/form-data'
         >
           <label htmlFor='name' className='form__label'>
@@ -228,8 +222,12 @@ const RegForm = () => {
                         image.onload = function(e) {
                           const height = e.target.height
                           const width = e.target.naturalWidth
-                          console.log(size)
-                          if((width <= 7000 && height <= 7000) || size >= 5) {
+                          
+                          if(size >= 5000) {
+                            setError('photo', {type: 'size', message: 'The photo size must not be greater than 5 Mb'})
+                          }
+
+                          if(width <= 70 && height <= 70) {
                             setError('photo', {type: 'resolution', message: 'Minimum size of photo 70x70px'})
                           }
                           
@@ -271,40 +269,11 @@ const RegForm = () => {
         </form>
 
         {/* Modal after success registration */}
-        {
+        {/* {
           congrats 
-            ? <CSSTransition
-                in={congrats}
-                timeout={5000}
-                mountOnEnter
-                unmountOnExit
-              >
-                <div className='congrats'>
-                  <div className='congrats-backdrop'></div>
-                  <div className='congrats-content'>
-                    <h5 className='congrats-content__title'>Congratulations</h5>
-                    <button 
-                      type='button'
-                      onClick={closeCongrats}
-                      className='congrats-content__close'
-                    >
-                      <CloseIcon />
-                    </button>
-                    <p className='congrats-content__text'>
-                      You have successfully passed the registration
-                    </p>
-                    <button 
-                      type='button'
-                      onClick={closeCongrats}
-                      className='btn congrats-content__great-btn'
-                    >
-                      Great
-                    </button>
-                  </div>
-                </div>
-              </CSSTransition>
+            ? <Modal />
             : ''
-        }
+        } */}
       </div>
     </section>
   )
